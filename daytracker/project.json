@@ -1,0 +1,57 @@
+{
+  "name": "daytracker",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@analogjs/platform:vite",
+      "defaultConfiguration": "production",
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "sourcemap": false,
+          "mode": "production"
+        }
+      },
+      "outputs": [
+        "{options.outputPath}",
+        "{workspaceRoot}/dist/daytracker/.nitro",
+        "{workspaceRoot}/dist/daytracker/ssr",
+        "{workspaceRoot}/dist/daytracker/analog"
+      ],
+      "options": {
+        "main": "daytracker/src/main.ts",
+        "configFile": "daytracker/vite.config.ts",
+        "outputPath": "dist/daytracker/client",
+        "tsConfig": "daytracker/tsconfig.app.json"
+      }
+    },
+    "serve": {
+      "executor": "@analogjs/platform:vite-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "daytracker:build",
+        "port": 4200
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "daytracker:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "daytracker:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@analogjs/platform:vitest",
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    }
+  },
+  "tags": [],
+  "sourceRoot": "./daytracker/src"
+}
