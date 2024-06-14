@@ -88,14 +88,12 @@ import { Note } from "../../db";
           </button>
         </form>
         <div class="mt-4" *ngIf="notes$ | async as notes; else loading">
-          <div
-            class="note mb-4 p-4 font-normal border border-input rounded-md"
-            *ngFor="let note of notes; trackBy: noteTrackBy; let i = index"
-          >
+          @for(note of notes; track note.id; let index = $index) {
+          <div class="note mb-4 p-4 font-normal border border-input rounded-md">
             <div class="flex items-center justify-between">
               <p class="text-sm text-zinc-400">{{ note.createdAt | date }}</p>
               <button
-                [attr.data-testid]="'removeNoteAtIndexBtn' + i"
+                [attr.data-testid]="'removeNoteAtIndexBtn' + index"
                 class="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-zinc-100 hover:text-zinc-950 h-6 w-6 rounded-md"
                 (click)="removeNote(note.id)"
               >
@@ -104,6 +102,7 @@ import { Note } from "../../db";
             </div>
             <p class="mb-4">{{ note.note }}</p>
           </div>
+          }
 
           <div
             class="no-notes text-center rounded-xl p-20"
@@ -137,7 +136,7 @@ export class AnalogWelcomeComponent {
   }
 
   public noteTrackBy = (index: number, note: Note) => {
-    return note.id;
+    return note.id.toString();
   };
 
   public addNote(form: NgForm) {
