@@ -61,7 +61,7 @@ import { Task, newTask } from "../../schema";
           class="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center"
         >
           <h2 class="text-[#DD0031] font-medium text-3xl leading-[1.1]">
-            Leave a tasksssbrrrrrr!!!!!
+            Leave a tasksssbrrrrrr!!!!!????????
           </h2>
           <p class="max-w-[85%] leading-normal sm:text-lg sm:leading-7">
             This is an example of how you can use tRPC to superpower your
