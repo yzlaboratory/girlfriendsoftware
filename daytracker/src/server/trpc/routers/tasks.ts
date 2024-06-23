@@ -1,22 +1,23 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { db, notes } from "../../../db";
+import { db } from "../../../db";
 import { eq } from "drizzle-orm";
+import { tasks } from "../../../schema";
 
-export const noteRouter = router({
+export const taskRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        note: z.string(),
+        task: z.string(),
       })
     )
     .mutation(
       async ({ input }) =>
-        await db.insert(notes).values({ note: input.note }).returning()
+        await db.insert(tasks).values({ name: input.task }).returning()
     ),
   list: publicProcedure.query(async () => {
-    const selectedNotes = await db.select().from(notes);
-    return selectedNotes.map((note) => ({ ...note, id: +note.id }));
+    const selectedTasks = await db.select().from(tasks);
+    return selectedTasks.map((task) => ({ ...task, id: +task.id }));
   }),
   remove: publicProcedure
     .input(
@@ -26,6 +27,6 @@ export const noteRouter = router({
     )
     .mutation(
       async ({ input }) =>
-        await db.delete(notes).where(eq(notes.id, input.id)).returning()
+        await db.delete(tasks).where(eq(tasks.id, input.id)).returning()
     ),
 });

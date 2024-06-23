@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from "@angular/forms";
 import { shareReplay, Subject, switchMap, take } from "rxjs";
 import { waitFor } from "@analogjs/trpc";
 import { injectTrpcClient } from "../../trpc-client";
-import { Note } from "../../db";
+import { Task, newTask } from "../../schema";
 
 @Component({
   selector: "daytracker-analog-welcome",
@@ -61,7 +61,7 @@ import { Note } from "../../db";
           class="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center"
         >
           <h2 class="text-[#DD0031] font-medium text-3xl leading-[1.1]">
-            Leave a note
+            Leave a task
           </h2>
           <p class="max-w-[85%] leading-normal sm:text-lg sm:leading-7">
             This is an example of how you can use tRPC to superpower your
@@ -71,14 +71,14 @@ import { Note } from "../../db";
         <form
           class="mt-8 pb-2 flex items-center"
           #f="ngForm"
-          (ngSubmit)="addNote(f)"
+          (ngSubmit)="addTask(f)"
         >
-          <label class="sr-only" for="newNote"> Note </label>
+          <label class="sr-only" for="newTask"> Task </label>
           <input
             required
             autocomplete="off"
-            name="newNote"
-            [(ngModel)]="newNote"
+            name="newTask"
+            [(ngModel)]="newTask"
             class="w-full inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:text-zinc-950 h-11 px-2 rounded-md"
           />
           <button
@@ -87,28 +87,28 @@ import { Note } from "../../db";
             +
           </button>
         </form>
-        <div class="mt-4" *ngIf="notes$ | async as notes; else loading">
-          @for(note of notes; track note.id; let index = $index) {
+        <div class="mt-4" *ngIf="tasks$ | async as tasks; else loading">
+          @for(task of tasks; track task.id; let index = $index) {
           <div class="note mb-4 p-4 font-normal border border-input rounded-md">
             <div class="flex items-center justify-between">
-              <p class="text-sm text-zinc-400">{{ note.createdAt | date }}</p>
+              <p class="text-sm text-zinc-400">{{ task.created_at | date }}</p>
               <button
                 [attr.data-testid]="'removeNoteAtIndexBtn' + index"
                 class="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-zinc-100 hover:text-zinc-950 h-6 w-6 rounded-md"
-                (click)="removeNote(note.id)"
+                (click)="removeNote(task.id)"
               >
                 x
               </button>
             </div>
-            <p class="mb-4">{{ note.note }}</p>
+            <p class="mb-4">{{ task.name }}</p>
           </div>
           }
 
           <div
             class="no-notes text-center rounded-xl p-20"
-            *ngIf="notes.length === 0"
+            *ngIf="tasks.length === 0"
           >
-            <h3 class="text-xl font-medium">No notes yet!</h3>
+            <h3 class="text-xl font-medium">No tasks yet!</h3>
             <p class="text-zinc-400">
               Add a new one and see them appear here...
             </p>
@@ -124,36 +124,36 @@ import { Note } from "../../db";
 export class AnalogWelcomeComponent {
   private _trpc = injectTrpcClient();
   public triggerRefresh$ = new Subject<void>();
-  public notes$ = this.triggerRefresh$.pipe(
-    switchMap(() => this._trpc.note.list.query()),
+  public tasks$ = this.triggerRefresh$.pipe(
+    switchMap(() => this._trpc.task.list.query()),
     shareReplay(1)
   );
-  public newNote = "";
+  public newTask = "";
 
   constructor() {
-    void waitFor(this.notes$);
+    void waitFor(this.tasks$);
     this.triggerRefresh$.next();
   }
 
-  public noteTrackBy = (index: number, note: Note) => {
-    return note.id.toString();
+  public taskTrackBy = (index: number, task: Task) => {
+    return task.id.toString();
   };
 
-  public addNote(form: NgForm) {
+  public addTask(form: NgForm) {
     if (!form.valid) {
       form.form.markAllAsTouched();
       return;
     }
-    this._trpc.note.create
-      .mutate({ note: this.newNote })
+    this._trpc.task.create
+      .mutate({ task: this.newTask })
       .pipe(take(1))
       .subscribe(() => this.triggerRefresh$.next());
-    this.newNote = "";
+    this.newTask = "";
     form.form.reset();
   }
 
   public removeNote(id: number) {
-    this._trpc.note.remove
+    this._trpc.task.remove
       .mutate({ id })
       .pipe(take(1))
       .subscribe(() => this.triggerRefresh$.next());
