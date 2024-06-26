@@ -18,8 +18,8 @@ import { ButtonModule } from "primeng/button";
           <p-panel header="Tägliche Information" [toggleable]="true">
             <ng-template pTemplate="footer">
               <div class="flex flex-wrap content-center justify-between gap-3">
-                <i class="pi pi-heart" style="color: #10B99A"></i>
-                <span class="content-center" style="color: #10B99A">
+                <i class="pi pi-heart text-primary-500"></i>
+                <span class="text-primary-500 content-center">
                   dein Herzbär
                 </span>
               </div>
