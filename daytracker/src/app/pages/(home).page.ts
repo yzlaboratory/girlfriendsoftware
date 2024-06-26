@@ -1,14 +1,11 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
-import { AnalogWelcomeComponent } from './analog-welcome.component';
+import { WelcomeComponent } from "./welcome.component";
 
 @Component({
-  selector: 'daytracker-home',
+  selector: "daytracker-home",
   standalone: true,
-  imports: [AnalogWelcomeComponent],
-  template: `
-     <daytracker-analog-welcome/>
-  `,
+  imports: [WelcomeComponent],
+  template: ` <daytracker-welcome /> `,
 })
-export default class HomeComponent {
-}
+export default class HomeComponent {}
