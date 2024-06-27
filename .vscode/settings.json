@@ -1,0 +1,8 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "prettier.bracketSameLine": true,
+  "prettier.singleAttributePerLine": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

@@ -1,6 +1,7 @@
 @import "@angular/cdk/overlay-prebuilt.css";
-@import "primeng/resources/themes/aura-light-green/theme.css";
 @import "primeng/resources/primeng.css";
+@import "primeng/resources/themes/aura-light-green/theme.css";
+
 @import "primeicons/primeicons.css";
 
 @tailwind base;
@@ -11,4 +12,5 @@ html,
 body {
   display: block;
   height: 100%;
+  font-size: 14px;
 }

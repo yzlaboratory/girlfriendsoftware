@@ -1,10 +1,10 @@
-import { Component } from "@angular/core";
+import { waitFor } from "@analogjs/trpc";
 import { AsyncPipe, DatePipe, NgFor, NgIf } from "@angular/common";
+import { Component } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { shareReplay, Subject, switchMap, take } from "rxjs";
-import { waitFor } from "@analogjs/trpc";
+import { Task } from "../../schema";
 import { injectTrpcClient } from "../../trpc-client";
-import { Task, newTask } from "../../schema";
 
 @Component({
   selector: "daytracker-analog-welcome",
@@ -15,7 +15,7 @@ import { Task, newTask } from "../../schema";
       "flex min-h-screen flex-col text-zinc-900 bg-zinc-50 px-4 pt-8 pb-32",
   },
   template: `
-    <main class="flex-1 mx-auto">
+    <main class="mx-auto flex-1">
       <section class="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
         <div class="flex max-w-[64rem] flex-col items-center gap-4 text-center">
           <img
@@ -24,32 +24,32 @@ import { Task, newTask } from "../../schema";
             alt="AnalogJs logo. Two red triangles and a white analog wave in front"
           />
           <a
-            class="rounded-2xl bg-zinc-200 px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            class="focus-visible:ring-ring rounded-2xl bg-zinc-200 px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             target="_blank"
             href="https://twitter.com/analogjs"
             >Follow along on Twitter</a
           >
           <h1
-            class="font-heading font-medium text-3xl sm:text-5xl md:text-6xl lg:text-7xl"
+            class="font-heading text-3xl font-medium sm:text-5xl md:text-6xl lg:text-7xl"
           >
             <span class="text-[#DD0031]">Analog.</span> The fullstack Angular
             meta-framework
           </h1>
           <p
-            class="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+            class="text-muted-foreground max-w-[42rem] leading-normal sm:text-xl sm:leading-8"
           >
             Analog is for building applications and websites with Angular.
             <br />Powered by Vite.
           </p>
           <div class="space-x-4">
             <a
-              class="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-zinc-950 text-zinc-50 hover:bg-zinc-950/90 h-11 px-8 rounded-md"
+              class="focus-visible:ring-ring ring-offset-background inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-8 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-950/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               href="https://analogjs.org"
               >Read the docs</a
             ><a
               target="_blank"
               rel="noreferrer"
-              class="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-zinc-100 hover:text-zinc-950 h-11 px-8 rounded-md"
+              class="focus-visible:ring-ring ring-offset-background border-input inline-flex h-11 items-center justify-center rounded-md border px-8 text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               href="https://github.com/analogjs/analog"
               >Star on GitHub</a
             >
@@ -60,7 +60,7 @@ import { Task, newTask } from "../../schema";
         <div
           class="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center"
         >
-          <h2 class="text-[#DD0031] font-medium text-3xl leading-[1.1]">
+          <h2 class="text-3xl font-medium leading-[1.1] text-[#DD0031]">
             Leave a tasksssbrrrrrr!!!!!????????
           </h2>
           <p class="max-w-[85%] leading-normal sm:text-lg sm:leading-7">
@@ -69,7 +69,7 @@ import { Task, newTask } from "../../schema";
           </p>
         </div>
         <form
-          class="mt-8 pb-2 flex items-center"
+          class="mt-8 flex items-center pb-2"
           #f="ngForm"
           (ngSubmit)="addTask(f)"
         >
@@ -79,33 +79,37 @@ import { Task, newTask } from "../../schema";
             autocomplete="off"
             name="newTask"
             [(ngModel)]="newTask"
-            class="w-full inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:text-zinc-950 h-11 px-2 rounded-md"
+            class="focus-visible:ring-ring ring-offset-background border-input inline-flex h-11 w-full items-center justify-center rounded-md border px-2 text-sm font-medium transition-colors hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           />
           <button
-            class="ml-2 inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-zinc-100 hover:text-zinc-950 h-11 px-8 rounded-md"
+            class="focus-visible:ring-ring ring-offset-background border-input ml-2 inline-flex h-11 items-center justify-center rounded-md border px-8 text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
           >
             +
           </button>
         </form>
         <div class="mt-4" *ngIf="tasks$ | async as tasks; else loading">
-          @for(task of tasks; track task.id; let index = $index) {
-          <div class="note mb-4 p-4 font-normal border border-input rounded-md">
-            <div class="flex items-center justify-between">
-              <p class="text-sm text-zinc-400">{{ task.created_at | date }}</p>
-              <button
-                [attr.data-testid]="'removeNoteAtIndexBtn' + index"
-                class="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-zinc-100 hover:text-zinc-950 h-6 w-6 rounded-md"
-                (click)="removeNote(task.id)"
-              >
-                x
-              </button>
+          @for (task of tasks; track task.id; let index = $index) {
+            <div
+              class="note border-input mb-4 rounded-md border p-4 font-normal"
+            >
+              <div class="flex items-center justify-between">
+                <p class="text-sm text-zinc-400">
+                  {{ task.created_at | date }}
+                </p>
+                <button
+                  [attr.data-testid]="'removeNoteAtIndexBtn' + index"
+                  class="focus-visible:ring-ring ring-offset-background inline-flex h-6 w-6 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                  (click)="removeNote(task.id)"
+                >
+                  x
+                </button>
+              </div>
+              <p class="mb-4">{{ task.name }}</p>
             </div>
-            <p class="mb-4">{{ task.name }}</p>
-          </div>
           }
 
           <div
-            class="no-notes text-center rounded-xl p-20"
+            class="no-notes rounded-xl p-20 text-center"
             *ngIf="tasks.length === 0"
           >
             <h3 class="text-xl font-medium">No tasks yet!</h3>
@@ -115,7 +119,7 @@ import { Task, newTask } from "../../schema";
           </div>
         </div>
         <ng-template #loading>
-          <p class="text-center mt-4">Loading...</p>
+          <p class="mt-4 text-center">Loading...</p>
         </ng-template>
       </section>
     </main>
@@ -126,7 +130,7 @@ export class AnalogWelcomeComponent {
   public triggerRefresh$ = new Subject<void>();
   public tasks$ = this.triggerRefresh$.pipe(
     switchMap(() => this._trpc.task.list.query()),
-    shareReplay(1)
+    shareReplay(1),
   );
   public newTask = "";
 

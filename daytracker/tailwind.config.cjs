@@ -12,11 +12,22 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  corePlugins: {
+    preflight: false,
+  },
   theme: {
     colors: {
       transparent: "transparent",
       current: "currentColor",
       primary: colors.emerald,
+      zinc: colors.zinc,
+      white: colors.white,
+      slate: colors.slate,
+    },
+    extend: {
+      borderWidth: {
+        1: "1px",
+      },
     },
   },
 };
