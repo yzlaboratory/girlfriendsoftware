@@ -6,6 +6,8 @@ import { WelcomeComponent } from "./welcome.component";
   selector: "daytracker-home",
   standalone: true,
   imports: [WelcomeComponent],
-  template: ` <daytracker-welcome /> `,
+  template: `
+    <daytracker-welcome />
+  `,
 })
 export default class HomeComponent {}

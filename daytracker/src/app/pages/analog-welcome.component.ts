@@ -21,45 +21,45 @@ import { injectTrpcClient } from "../../trpc-client";
           <img
             class="h-12 w-12"
             src="https://analogjs.org/img/logos/analog-logo.svg"
-            alt="AnalogJs logo. Two red triangles and a white analog wave in front"
-          />
+            alt="AnalogJs logo. Two red triangles and a white analog wave in front" />
           <a
             class="focus-visible:ring-ring rounded-2xl bg-zinc-200 px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             target="_blank"
-            href="https://twitter.com/analogjs"
-            >Follow along on Twitter</a
-          >
+            href="https://twitter.com/analogjs">
+            Follow along on Twitter
+          </a>
           <h1
-            class="font-heading text-3xl font-medium sm:text-5xl md:text-6xl lg:text-7xl"
-          >
-            <span class="text-[#DD0031]">Analog.</span> The fullstack Angular
-            meta-framework
+            class="font-heading text-3xl font-medium sm:text-5xl md:text-6xl lg:text-7xl">
+            <span class="text-[#DD0031]">Analog.</span>
+            The fullstack Angular meta-framework
           </h1>
           <p
-            class="text-muted-foreground max-w-[42rem] leading-normal sm:text-xl sm:leading-8"
-          >
+            class="text-muted-foreground max-w-[42rem] leading-normal sm:text-xl sm:leading-8">
             Analog is for building applications and websites with Angular.
-            <br />Powered by Vite.
+            <br />
+            Powered by Vite.
           </p>
           <div class="space-x-4">
             <a
               class="focus-visible:ring-ring ring-offset-background inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-8 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-950/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              href="https://analogjs.org"
-              >Read the docs</a
-            ><a
+              href="https://analogjs.org">
+              Read the docs
+            </a>
+            <a
               target="_blank"
               rel="noreferrer"
               class="focus-visible:ring-ring ring-offset-background border-input inline-flex h-11 items-center justify-center rounded-md border px-8 text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              href="https://github.com/analogjs/analog"
-              >Star on GitHub</a
-            >
+              href="https://github.com/analogjs/analog">
+              Star on GitHub
+            </a>
           </div>
         </div>
       </section>
-      <section id="trpc-demo" class="py-8 md:py-12 lg:py-24">
+      <section
+        id="trpc-demo"
+        class="py-8 md:py-12 lg:py-24">
         <div
-          class="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center"
-        >
+          class="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
           <h2 class="text-3xl font-medium leading-[1.1] text-[#DD0031]">
             Leave a tasksssbrrrrrr!!!!!????????
           </h2>
@@ -71,27 +71,29 @@ import { injectTrpcClient } from "../../trpc-client";
         <form
           class="mt-8 flex items-center pb-2"
           #f="ngForm"
-          (ngSubmit)="addTask(f)"
-        >
-          <label class="sr-only" for="newTask"> Task </label>
+          (ngSubmit)="addTask(f)">
+          <label
+            class="sr-only"
+            for="newTask">
+            Task
+          </label>
           <input
             required
             autocomplete="off"
             name="newTask"
             [(ngModel)]="newTask"
-            class="focus-visible:ring-ring ring-offset-background border-input inline-flex h-11 w-full items-center justify-center rounded-md border px-2 text-sm font-medium transition-colors hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-          />
+            class="focus-visible:ring-ring ring-offset-background border-input inline-flex h-11 w-full items-center justify-center rounded-md border px-2 text-sm font-medium transition-colors hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
           <button
-            class="focus-visible:ring-ring ring-offset-background border-input ml-2 inline-flex h-11 items-center justify-center rounded-md border px-8 text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-          >
+            class="focus-visible:ring-ring ring-offset-background border-input ml-2 inline-flex h-11 items-center justify-center rounded-md border px-8 text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
             +
           </button>
         </form>
-        <div class="mt-4" *ngIf="tasks$ | async as tasks; else loading">
+        <div
+          class="mt-4"
+          *ngIf="tasks$ | async as tasks; else loading">
           @for (task of tasks; track task.id; let index = $index) {
             <div
-              class="note border-input mb-4 rounded-md border p-4 font-normal"
-            >
+              class="note border-input mb-4 rounded-md border p-4 font-normal">
               <div class="flex items-center justify-between">
                 <p class="text-sm text-zinc-400">
                   {{ task.created_at | date }}
@@ -99,8 +101,7 @@ import { injectTrpcClient } from "../../trpc-client";
                 <button
                   [attr.data-testid]="'removeNoteAtIndexBtn' + index"
                   class="focus-visible:ring-ring ring-offset-background inline-flex h-6 w-6 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-zinc-100 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                  (click)="removeNote(task.id)"
-                >
+                  (click)="removeNote(task.id)">
                   x
                 </button>
               </div>
@@ -110,8 +111,7 @@ import { injectTrpcClient } from "../../trpc-client";
 
           <div
             class="no-notes rounded-xl p-20 text-center"
-            *ngIf="tasks.length === 0"
-          >
+            *ngIf="tasks.length === 0">
             <h3 class="text-xl font-medium">No tasks yet!</h3>
             <p class="text-zinc-400">
               Add a new one and see them appear here...
