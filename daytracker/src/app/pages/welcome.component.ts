@@ -2,6 +2,8 @@ import { AsyncPipe } from "@angular/common";
 import { Component } from "@angular/core";
 import { ButtonModule } from "primeng/button";
 import { PanelModule } from "primeng/panel";
+import { Subject, take } from "rxjs";
+import { injectTrpcClient } from "../../../src/trpc-client";
 import { TaskCreaterComponent } from "./task-creater.component";
 
 @Component({
@@ -9,7 +11,7 @@ import { TaskCreaterComponent } from "./task-creater.component";
   standalone: true,
   host: {
     class:
-      "flex min-h-screen flex-col text-zinc-900 bg-zinc-100 px-4 pt-8 pb-32",
+      "flex min-h-screen flex-col text-slate-700 bg-zinc-100 px-4 pt-8 pb-32",
   },
   template: `
     <main class="mx-auto w-2/3 flex-1">
@@ -37,12 +39,35 @@ import { TaskCreaterComponent } from "./task-creater.component";
         </div>
       </section>
       <section class="py-8 md:py-12 lg:py-24">
-        <daytracker-task-creater />
+        <daytracker-task-creater (newTask)="handleNewTask($event)" />
       </section>
     </main>
   `,
   imports: [AsyncPipe, PanelModule, ButtonModule, TaskCreaterComponent],
 })
 export class WelcomeComponent {
+  private _trpc = injectTrpcClient();
+  private projectsRefresh$ = new Subject<void>();
   constructor() {}
+
+  handleNewTask($event: any) {
+    let projectId = null;
+    console.log($event.project);
+    console.log(Number($event.project.value));
+    console.log(+Number($event.project.value));
+    console.log(isNaN(+Number($event.project.value)));
+    if (!isNaN(+Number($event.project))) {
+      projectId = $event.project;
+    } else {
+      //create project and use id
+      this._trpc.project.create
+        .mutate({ name: $event.project })
+        .pipe(take(1))
+        .subscribe((newProject) => {
+          projectId = newProject[0].id;
+          this.projectsRefresh$.next();
+          console.log(projectId);
+        });
+    }
+  }
 }

@@ -8,12 +8,12 @@ export const projectRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        project: z.string(),
+        name: z.string(),
       }),
     )
     .mutation(
       async ({ input }) =>
-        await db.insert(projects).values({ name: input.project }).returning(),
+        await db.insert(projects).values({ name: input.name }).returning(),
     ),
   list: publicProcedure.query(async () => {
     const selectedProjects = await db.select().from(projects);

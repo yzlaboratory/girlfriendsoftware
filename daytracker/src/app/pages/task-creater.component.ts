@@ -1,14 +1,13 @@
 import { waitFor } from "@analogjs/trpc";
 import { AsyncPipe, JsonPipe } from "@angular/common";
 import { Component, output, OutputEmitterRef } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ButtonModule } from "primeng/button";
 import { CalendarModule } from "primeng/calendar";
 import { DropdownModule } from "primeng/dropdown";
 import { InputTextModule } from "primeng/inputtext";
 import { SelectButtonModule } from "primeng/selectbutton";
 import { shareReplay, Subject, switchMap } from "rxjs";
-import { Task } from "../../schema";
 import { injectTrpcClient } from "../../trpc-client";
 
 @Component({
@@ -26,12 +25,12 @@ import { injectTrpcClient } from "../../trpc-client";
   ],
   host: {
     class:
-      "flex flex-col w-1/3 bg-white p-6 rounded-md border-1 border-slate-200 border-solid",
+      "flex flex-col min-w-56 max-w-80 w-1/3 bg-white p-6 rounded-md border-1 border-slate-200 border-solid",
   },
   template: `
     <form
       [formGroup]="taskForm"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="emitTask()"
       class="w-full">
       <div class="flex flex-col gap-2 py-2">
         <label for="task">Todo</label>
@@ -39,7 +38,8 @@ import { injectTrpcClient } from "../../trpc-client";
           id="task"
           type="text"
           pInputText
-          formControlName="name" />
+          formControlName="name"
+          aria-describedby="username-help" />
       </div>
       <div class="flex flex-col gap-2 py-2">
         <label for="priority">Priorität</label>
@@ -89,12 +89,12 @@ export class TaskCreaterComponent {
   private _trpc = injectTrpcClient();
   public projectsRefresh$ = new Subject<void>();
 
-  task: OutputEmitterRef<Task> = output();
-  taskForm = new FormGroup({
-    name: new FormControl(""),
-    priority: new FormControl(1),
-    due: new FormControl(""),
-    project: new FormControl(""),
+  newTask: OutputEmitterRef<any> = output();
+  taskForm = this.formBuilder.group({
+    name: ["", Validators.required],
+    priority: [1, Validators.required],
+    due: this.formBuilder.control<Date | null>(null),
+    project: [""],
   });
   priorityState = [
     { label: 1, value: 1 },
@@ -107,13 +107,19 @@ export class TaskCreaterComponent {
     shareReplay(1),
   );
 
-  constructor() {
+  constructor(private formBuilder: FormBuilder) {
     void waitFor(this.projects$);
     this.projectsRefresh$.next();
   }
 
-  onSubmit() {
+  emitTask() {
     // TODO: Use EventEmitter with form value
-    console.warn(this.taskForm.value);
+    console.log(this.taskForm.value);
+    this.newTask.emit({
+      name: this.taskForm.get("name")?.value,
+      priority: this.taskForm.get("priority")?.value,
+      due_by: this.taskForm.get("due")?.value,
+      project: this.taskForm.get("project")?.value,
+    });
   }
 }
