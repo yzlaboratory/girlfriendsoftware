@@ -1,14 +1,12 @@
-import { waitFor } from "@analogjs/trpc";
 import { AsyncPipe, JsonPipe } from "@angular/common";
-import { Component, output, OutputEmitterRef } from "@angular/core";
+import { Component, input, output, OutputEmitterRef } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Project } from "daytracker/src/schema";
 import { ButtonModule } from "primeng/button";
 import { CalendarModule } from "primeng/calendar";
 import { DropdownModule } from "primeng/dropdown";
 import { InputTextModule } from "primeng/inputtext";
 import { SelectButtonModule } from "primeng/selectbutton";
-import { shareReplay, Subject, switchMap } from "rxjs";
-import { injectTrpcClient } from "../../trpc-client";
 
 @Component({
   selector: "daytracker-task-creater",
@@ -52,20 +50,14 @@ import { injectTrpcClient } from "../../trpc-client";
       </div>
       <div class="flex w-full flex-col gap-2 py-2">
         <label for="project">Projekt</label>
-        @if (projects$ | async; as projects) {
-          <p-dropdown
-            [options]="projects"
-            formControlName="project"
-            placeholder=""
-            [editable]="true"
-            optionLabel="name"
-            optionValue="id"
-            [style]="{ width: '100%' }" />
-        } @else {
-          <p-dropdown
-            loading="true"
-            [style]="{ width: '100%' }" />
-        }
+        <p-dropdown
+          [options]="projects()"
+          formControlName="project"
+          placeholder=""
+          [editable]="true"
+          optionLabel="name"
+          optionValue="id"
+          [style]="{ width: '100%' }" />
       </div>
       <div class="flex flex-col gap-2 py-4">
         <label for="due">Deadline</label>
@@ -86,10 +78,9 @@ import { injectTrpcClient } from "../../trpc-client";
   `,
 })
 export class TaskCreaterComponent {
-  private _trpc = injectTrpcClient();
-  public projectsRefresh$ = new Subject<void>();
-
   newTask: OutputEmitterRef<any> = output();
+  projects = input<Project[]>();
+
   taskForm = this.formBuilder.group({
     name: ["", Validators.required],
     priority: [1, Validators.required],
@@ -102,24 +93,16 @@ export class TaskCreaterComponent {
     { label: 3, value: 3 },
     { label: 4, value: 4 },
   ];
-  projects$ = this.projectsRefresh$.pipe(
-    switchMap(() => this._trpc.project.list.query()),
-    shareReplay(1),
-  );
 
-  constructor(private formBuilder: FormBuilder) {
-    void waitFor(this.projects$);
-    this.projectsRefresh$.next();
-  }
+  constructor(private formBuilder: FormBuilder) {}
 
   emitTask() {
-    // TODO: Use EventEmitter with form value
-    console.log(this.taskForm.value);
     this.newTask.emit({
       name: this.taskForm.get("name")?.value,
       priority: this.taskForm.get("priority")?.value,
       due_by: this.taskForm.get("due")?.value,
       project: this.taskForm.get("project")?.value,
     });
+    this.taskForm.reset();
   }
 }

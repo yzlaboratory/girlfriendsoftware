@@ -1,4 +1,3 @@
-import { InferSelectModel } from "drizzle-orm";
 import {
   integer,
   pgTable,
@@ -31,5 +30,7 @@ export const projects = pgTable("projects", {
 
 export type Task = typeof tasks.$inferSelect;
 export type newTask = typeof tasks.$inferInsert;
+export type Project = typeof projects.$inferSelect;
+export type newProject = typeof projects.$inferInsert;
 //export type Note = InferSelectModel<typeof notes>;
 //export type NewNote = InferInsertModel<typeof notes>;

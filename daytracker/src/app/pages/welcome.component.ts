@@ -1,8 +1,18 @@
+import { waitFor } from "@analogjs/trpc";
 import { AsyncPipe } from "@angular/common";
 import { Component } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { Project } from "daytracker/src/schema";
 import { ButtonModule } from "primeng/button";
 import { PanelModule } from "primeng/panel";
-import { Subject, take } from "rxjs";
+import {
+  Observable,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+  take,
+} from "rxjs";
 import { injectTrpcClient } from "../../../src/trpc-client";
 import { TaskCreaterComponent } from "./task-creater.component";
 
@@ -39,7 +49,9 @@ import { TaskCreaterComponent } from "./task-creater.component";
         </div>
       </section>
       <section class="py-8 md:py-12 lg:py-24">
-        <daytracker-task-creater (newTask)="handleNewTask($event)" />
+        <daytracker-task-creater
+          (newTask)="handleNewTask($event)"
+          [projects]="projects()" />
       </section>
     </main>
   `,
@@ -47,27 +59,32 @@ import { TaskCreaterComponent } from "./task-creater.component";
 })
 export class WelcomeComponent {
   private _trpc = injectTrpcClient();
+
   private projectsRefresh$ = new Subject<void>();
-  constructor() {}
+  projects$: Observable<Project[]> = this.projectsRefresh$.pipe(
+    switchMap(() => this._trpc.project.list.query()),
+    startWith([]),
+    shareReplay(1),
+  );
+  projects = toSignal(this.projects$, { initialValue: [] });
+  constructor() {
+    void waitFor(this.projects$);
+    this.projectsRefresh$.next();
+  }
 
   handleNewTask($event: any) {
     let projectId = null;
-    console.log($event.project);
-    console.log(Number($event.project.value));
-    console.log(+Number($event.project.value));
-    console.log(isNaN(+Number($event.project.value)));
     if (!isNaN(+Number($event.project))) {
       projectId = $event.project;
     } else {
-      //create project and use id
       this._trpc.project.create
         .mutate({ name: $event.project })
         .pipe(take(1))
         .subscribe((newProject) => {
           projectId = newProject[0].id;
           this.projectsRefresh$.next();
-          console.log(projectId);
         });
+      //create task with project id
     }
   }
 }
