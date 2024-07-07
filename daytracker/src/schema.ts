@@ -15,7 +15,7 @@ export const tasks = pgTable("tasks", {
   prev: integer("prev"),
   priority: smallint("priority"),
   created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  due_by: timestamp("due_by"),
+  due: timestamp("due"),
   finished_at: timestamp("done_at", { mode: "date" }),
   project: integer("project_id").references(() => projects.id),
 });

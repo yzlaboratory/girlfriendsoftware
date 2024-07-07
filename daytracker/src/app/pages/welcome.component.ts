@@ -12,6 +12,7 @@ import {
   Subject,
   switchMap,
   take,
+  takeUntil,
 } from "rxjs";
 import { injectTrpcClient } from "../../../src/trpc-client";
 import { TaskCreaterComponent } from "./task-creater.component";
@@ -60,6 +61,8 @@ import { TaskCreaterComponent } from "./task-creater.component";
 export class WelcomeComponent {
   private _trpc = injectTrpcClient();
 
+  private destroy$ = new Subject<void>();
+
   private projectsRefresh$ = new Subject<void>();
   projects$: Observable<Project[]> = this.projectsRefresh$.pipe(
     switchMap(() => this._trpc.project.list.query()),
@@ -77,14 +80,29 @@ export class WelcomeComponent {
     if (!isNaN(+Number($event.project))) {
       projectId = $event.project;
     } else {
+      console.log($event);
       this._trpc.project.create
         .mutate({ name: $event.project })
-        .pipe(take(1))
+        .pipe(take(1), takeUntil(this.destroy$))
         .subscribe((newProject) => {
           projectId = newProject[0].id;
           this.projectsRefresh$.next();
+          //create task with project id
+          this._trpc.task.create
+            .mutate({
+              name: $event.name,
+              project: projectId,
+              due: $event.due,
+              priority: $event.priority,
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
         });
-      //create task with project id
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -100,7 +100,7 @@ export class TaskCreaterComponent {
     this.newTask.emit({
       name: this.taskForm.get("name")?.value,
       priority: this.taskForm.get("priority")?.value,
-      due_by: this.taskForm.get("due")?.value,
+      due: this.taskForm.get("due")?.value,
       project: this.taskForm.get("project")?.value,
     });
     this.taskForm.reset();
