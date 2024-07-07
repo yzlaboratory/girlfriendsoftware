@@ -76,6 +76,7 @@ export class WelcomeComponent {
   }
 
   handleNewTask($event: any) {
+    console.log("problem");
     let projectId = null;
     if (!isNaN(+Number($event.project))) {
       projectId = $event.project;
