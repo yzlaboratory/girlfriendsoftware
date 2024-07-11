@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { WelcomeComponent } from "./welcome.component";
 
 @Component({
-  selector: 'daytracker-root',
   standalone: true,
-  imports: [RouterOutlet],
-  template: ` <router-outlet></router-outlet> `,
+  imports: [RouterModule, WelcomeComponent],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrl: "./app.component.css",
 })
-export class AppComponent {}
+export class AppComponent {
+  title = "daytracker";
+}

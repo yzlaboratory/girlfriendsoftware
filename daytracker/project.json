@@ -2,56 +2,91 @@
   "name": "daytracker",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "daytracker/src",
+  "tags": [],
   "targets": {
     "build": {
-      "executor": "@analogjs/platform:vite",
-      "defaultConfiguration": "production",
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/daytracker",
+        "index": "daytracker/src/index.html",
+        "browser": "daytracker/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "daytracker/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "daytracker/public"
+          }
+        ],
+        "styles": ["daytracker/src/styles.css"],
+        "scripts": []
+      },
       "configurations": {
-        "development": {
-          "mode": "development"
-        },
         "production": {
-          "sourcemap": false,
-          "mode": "production"
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
         }
       },
-      "outputs": [
-        "{options.outputPath}",
-        "{workspaceRoot}/dist/daytracker/.nitro",
-        "{workspaceRoot}/dist/daytracker/ssr",
-        "{workspaceRoot}/dist/daytracker/analog"
-      ],
-      "options": {
-        "main": "daytracker/src/main.ts",
-        "configFile": "daytracker/vite.config.ts",
-        "outputPath": "dist/daytracker/client",
-        "tsConfig": "daytracker/tsconfig.app.json"
-      }
+      "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@analogjs/platform:vite-dev-server",
-      "defaultConfiguration": "development",
-      "options": {
-        "buildTarget": "daytracker:build",
-        "port": 4200
-      },
+      "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
-        "development": {
-          "buildTarget": "daytracker:build:development",
-          "hmr": true
-        },
         "production": {
           "buildTarget": "daytracker:build:production"
+        },
+        "development": {
+          "buildTarget": "daytracker:build:development"
         }
+      },
+      "defaultConfiguration": "development",
+      "options": {
+        "proxyConfig": "daytracker/proxy.conf.json"
       }
     },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "daytracker:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
     "test": {
-      "executor": "@analogjs/platform:vitest",
-      "outputs": [
-        "{projectRoot}/coverage"
-      ]
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "daytracker/jest.config.ts"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "daytracker:build",
+        "port": 4200,
+        "staticFilePath": "dist/daytracker/browser",
+        "spa": true
+      }
     }
-  },
-  "tags": [],
-  "sourceRoot": "./daytracker/src"
+  }
 }
