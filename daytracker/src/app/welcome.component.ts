@@ -30,7 +30,8 @@ import { TaskCreaterComponent } from "./task-creater.component";
           <p-panel
             class="w-full"
             header="Tägliche Information"
-            [toggleable]="true">
+            [toggleable]="true"
+            collapsed="true">
             <ng-template pTemplate="footer">
               <div class="flex flex-wrap content-center justify-between gap-3">
                 <i class="pi pi-heart text-primary-500"></i>
@@ -76,15 +77,21 @@ export class WelcomeComponent implements OnDestroy {
   handleNewTask($event: any) {
     let projectId = null;
     if (!isNaN(+Number($event.project))) {
+      console.log($event);
       projectId = $event.project;
       this.backendService
-        .createTask($event.name, projectId, $event.priority, $event.due)
+        .createTask(
+          $event.name,
+          projectId,
+          $event.priority,
+          $event.due,
+          $event.isPrivate,
+        )
         .pipe(takeUntil(this.destroy$))
         .subscribe();
     } else {
       console.log($event);
       console.log($event.project);
-      //thisworks
       this.backendService
         .createProject($event.project)
         .pipe(take(1), takeUntil(this.destroy$))
@@ -93,7 +100,13 @@ export class WelcomeComponent implements OnDestroy {
           projectId = responseBody[0].id;
           this.projectsRefresh$.next();
           this.backendService
-            .createTask($event.name, projectId, $event.priority, $event.due)
+            .createTask(
+              $event.name,
+              projectId,
+              $event.priority,
+              $event.due,
+              $event.isPrivate,
+            )
             .pipe(takeUntil(this.destroy$))
             .subscribe();
         });

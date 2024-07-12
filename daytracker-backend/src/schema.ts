@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   pgTable,
   serial,
@@ -11,21 +12,20 @@ import {
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   name: text("name"),
-  next: integer("next"),
-  prev: integer("prev"),
   priority: smallint("priority"),
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  due: timestamp("due", { mode: "date" }),
-  finished_at: timestamp("done_at", { mode: "date" }),
+  private: boolean("private"),
   project: integer("project_id").references(() => projects.id),
+  due: timestamp("due", { mode: "date" }),
+  created: timestamp("created", { mode: "date" }).defaultNow().notNull(),
+  done: timestamp("done", { mode: "date" }),
 });
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   name: text("name"),
   hex: varchar("hex", { length: 7 }),
-  created_at: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  finished_at: timestamp("done_at", { mode: "date" }),
+  created: timestamp("created", { mode: "date" }).defaultNow().notNull(),
+  done: timestamp("done", { mode: "date" }),
 });
 
 export type Task = typeof tasks.$inferSelect;

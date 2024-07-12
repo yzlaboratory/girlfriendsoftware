@@ -28,10 +28,13 @@ export class BackendService {
     project: number,
     priority: number,
     due: Date,
+    isPrivate: boolean,
   ): Observable<Task[]> {
+    console.log(isPrivate);
     return this.client.post<Task[]>(environment.apiUrl + "/api/tasks", {
       name: name,
       priority: priority,
+      isPrivate: isPrivate,
       project: project,
       due: due,
     });

@@ -6,6 +6,7 @@ import { CalendarModule } from "primeng/calendar";
 import { DropdownModule } from "primeng/dropdown";
 import { InputTextModule } from "primeng/inputtext";
 import { SelectButtonModule } from "primeng/selectbutton";
+import { ToggleButtonModule } from "primeng/togglebutton";
 import { newTask, Project } from "./dto";
 
 @Component({
@@ -20,6 +21,7 @@ import { newTask, Project } from "./dto";
     SelectButtonModule,
     DropdownModule,
     CalendarModule,
+    ToggleButtonModule,
   ],
   host: {
     class:
@@ -47,6 +49,16 @@ import { newTask, Project } from "./dto";
           [options]="priorityState"
           optionLabel="label"
           optionValue="value" />
+      </div>
+      <div class="flex flex-col gap-2 py-2">
+        <label for="private">Typ</label>
+        <p-toggleButton
+          id="work"
+          formControlName="work"
+          onLabel="Schleith"
+          onIcon="pi pi-briefcase"
+          offIcon="pi pi-home"
+          offLabel="Privat" />
       </div>
       <div class="flex w-full flex-col gap-2 py-2">
         <label for="project">Projekt</label>
@@ -86,6 +98,7 @@ export class TaskCreaterComponent {
     priority: [1, Validators.required],
     due: this.formBuilder.control<Date | null>(null),
     project: [""],
+    work: [true],
   });
   priorityState = [
     { label: 1, value: 1 },
@@ -102,7 +115,14 @@ export class TaskCreaterComponent {
       priority: this.taskForm.get("priority")?.value,
       due: this.taskForm.get("due")?.value,
       project: this.taskForm.get("project")?.value,
+      isPrivate: !this.taskForm.get("work")?.value,
     });
-    this.taskForm.reset();
+    this.taskForm.reset({
+      name: "",
+      priority: 1,
+      due: null,
+      project: "",
+      work: true,
+    });
   }
 }

@@ -54,6 +54,7 @@ export class AppController {
   @UsePipes(
     new ValidationPipe({
       transform: true,
+      skipNullProperties: true,
     }),
   )
   createTask(@Body() task: CreateTaskDto) {
@@ -65,7 +66,6 @@ export class AppController {
     console.log(typeof task.due);
     console.log(task.due instanceof String);
     console.log(task.due instanceof Date);
-    console.log(task.due.toISOString());
     return this.drizzleService.db
       .insert(tasks)
       .values({
@@ -73,6 +73,7 @@ export class AppController {
         project: task.project,
         priority: task.priority,
         due: task.due,
+        private: task.isPrivate,
       })
       .returning();
   }

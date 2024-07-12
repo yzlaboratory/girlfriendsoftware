@@ -1,11 +1,12 @@
+import { Optional } from "@nestjs/common";
 import { Type } from "class-transformer";
-import { IsDate } from "class-validator";
 
 export class CreateTaskDto {
   name: string;
-  project: number;
   priority: number;
+  isPrivate: boolean;
+  project: number;
+  @Optional()
   @Type(() => Date)
-  @IsDate()
   due: Date;
 }
