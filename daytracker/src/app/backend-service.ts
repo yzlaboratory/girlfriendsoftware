@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "../environments/environment";
 import { Project, Task } from "./dto";
 
 @Injectable({
@@ -11,12 +12,15 @@ export class BackendService {
 
   //TODO PRIVATE TODO LIST// PRIVATE TASKS FOR WEEKENDS TO SEE DURING THE WEEK
   getProjects(): Observable<Project[]> {
-    return this.client.get<Project[]>("/api/projects");
+    return this.client.get<Project[]>(environment.apiUrl + "/api/projects");
   }
 
   createProject(name: string): Observable<{ id: number }[]> {
     console.log(name);
-    return this.client.post<{ id: number }[]>("/api/projects", { name: name });
+    return this.client.post<{ id: number }[]>(
+      environment.apiUrl + "/api/projects",
+      { name: name },
+    );
   }
 
   createTask(
@@ -25,7 +29,7 @@ export class BackendService {
     priority: number,
     due: Date,
   ): Observable<Task[]> {
-    return this.client.post<Task[]>("/api/tasks", {
+    return this.client.post<Task[]>(environment.apiUrl + "/api/tasks", {
       name: name,
       priority: priority,
       project: project,
