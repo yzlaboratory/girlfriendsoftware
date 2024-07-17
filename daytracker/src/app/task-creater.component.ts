@@ -90,7 +90,7 @@ import { newTask, Project } from "./dto";
   `,
 })
 export class TaskCreaterComponent {
-  newTask: OutputEmitterRef<newTask> = output();
+  newTask: OutputEmitterRef<newTask> = output<newTask>();
   projects = input<Project[]>();
 
   taskForm = this.formBuilder.group({

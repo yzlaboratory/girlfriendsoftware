@@ -13,7 +13,7 @@ export type Task = {
   isPrivate: boolean | null;
   project: number | null;
   created_at: Date;
-  finished_at: Date | null;
+  done: Date | null;
   due: Date | null;
 };
 

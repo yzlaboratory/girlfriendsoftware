@@ -4,13 +4,14 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import { DrizzleService } from "../drizzle.service";
 import { projects, tasks } from "../schema";
-import { CreateTaskDto } from "./dto/create-task.dto";
+import { TaskDTO } from "./dto/task.dto";
 
 @Controller()
 export class AppController {
@@ -29,6 +30,30 @@ export class AppController {
   @Get("tasks")
   getTasks() {
     return this.drizzleService.db.select().from(tasks);
+  }
+
+  @Put("task")
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      skipNullProperties: true,
+      skipMissingProperties: true,
+    }),
+  )
+  updateTasks(@Body() task: TaskDTO) {
+    console.log(task);
+    return this.drizzleService.db
+      .update(tasks)
+      .set({
+        name: task.name,
+        priority: task.priority,
+        project: task.project,
+        done: task.done,
+        due: task.due,
+        private: task.isPrivate,
+      })
+      .where(eq(tasks.id, task.id))
+      .returning({ id: tasks.id });
   }
 
   @Get("tasks/:id")
@@ -55,17 +80,10 @@ export class AppController {
     new ValidationPipe({
       transform: true,
       skipNullProperties: true,
+      skipMissingProperties: true,
     }),
   )
-  createTask(@Body() task: CreateTaskDto) {
-    // ES5+
-    const myDate = new Date("2024-01-06");
-    const isoDateString = myDate.toISOString();
-
-    console.log(isoDateString); // 2024-01-06T00:00:00.000Z
-    console.log(typeof task.due);
-    console.log(task.due instanceof String);
-    console.log(task.due instanceof Date);
+  createTask(@Body() task: TaskDTO) {
     return this.drizzleService.db
       .insert(tasks)
       .values({

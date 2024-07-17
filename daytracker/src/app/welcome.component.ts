@@ -13,8 +13,9 @@ import {
   takeUntil,
 } from "rxjs";
 import { BackendService } from "./backend-service";
-import { Project } from "./dto";
+import { Project, Task } from "./dto";
 import { TaskCreaterComponent } from "./task-creater.component";
+import { TaskListComponent } from "./task-list.component";
 
 @Component({
   selector: "app-welcome",
@@ -54,11 +55,30 @@ import { TaskCreaterComponent } from "./task-creater.component";
           (newTask)="handleNewTask($event)"
           [projects]="projects()" />
       </section>
+      <section>
+        <app-task-list
+          (tasksClosed)="saveClosedTasksAndReload($event)"
+          [tasks]="tasks()" />
+      </section>
     </main>
   `,
-  imports: [AsyncPipe, PanelModule, ButtonModule, TaskCreaterComponent],
+  imports: [
+    AsyncPipe,
+    PanelModule,
+    ButtonModule,
+    TaskCreaterComponent,
+    TaskListComponent,
+  ],
 })
 export class WelcomeComponent implements OnDestroy {
+  //TODO CHECKBOX BEHAVIOUR NOT CORRECT; WRONG DATA SOMEHOW
+  //TODO: Due Date Time Discrepency
+  //TODO: Task List
+  //TODO: Task Complete
+  //TODO: Tasks groupably by Project
+  //TODO: Tasks sortable by priority and due
+  //TODO: Tasks highlighted when due is near
+  //TODO: Finished Task List Daily and Weekly
   private destroy$ = new Subject<void>();
 
   backendService = inject(BackendService);
@@ -69,9 +89,17 @@ export class WelcomeComponent implements OnDestroy {
     startWith([]),
     shareReplay(1),
   );
+  private tasksRefresh$ = new Subject<void>();
+  tasks$: Observable<Task[]> = this.tasksRefresh$.pipe(
+    switchMap(() => this.backendService.getTasks()),
+    startWith([]),
+    shareReplay(1),
+  );
   projects = toSignal(this.projects$, { initialValue: [] });
+  tasks = toSignal(this.tasks$, { initialValue: [] });
   constructor() {
     this.projectsRefresh$.next();
+    this.tasksRefresh$.next();
   }
 
   handleNewTask($event: any) {
@@ -111,6 +139,14 @@ export class WelcomeComponent implements OnDestroy {
             .subscribe();
         });
     }
+  }
+
+  saveClosedTasksAndReload(tasks: Task[]) {
+    console.log(tasks);
+    this.backendService
+      .updateTasks(tasks)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(() => this.tasksRefresh$.next());
   }
 
   ngOnDestroy() {
