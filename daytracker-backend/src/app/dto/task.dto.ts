@@ -4,7 +4,7 @@ export class TaskDTO {
   id: number;
   name: string;
   priority: number;
-  isPrivate: boolean;
+  private: boolean;
   project: number;
   @Type(() => Date)
   done: Date;

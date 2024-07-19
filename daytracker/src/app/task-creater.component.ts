@@ -115,7 +115,7 @@ export class TaskCreaterComponent {
       priority: this.taskForm.get("priority")?.value,
       due: this.taskForm.get("due")?.value,
       project: this.taskForm.get("project")?.value,
-      isPrivate: !this.taskForm.get("work")?.value,
+      private: !this.taskForm.get("work")?.value,
     });
     this.taskForm.reset({
       name: "",

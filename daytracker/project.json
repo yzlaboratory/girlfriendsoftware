@@ -8,12 +8,17 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/daytracker",
         "index": "daytracker/src/index.html",
         "browser": "daytracker/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js",
+          "@angular/localize/init"
+        ],
         "tsConfig": "daytracker/tsconfig.app.json",
         "assets": [
           {
@@ -21,7 +26,9 @@
             "input": "daytracker/public"
           }
         ],
-        "styles": ["daytracker/src/styles.css"],
+        "styles": [
+          "daytracker/src/styles.css"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -86,7 +93,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "daytracker/jest.config.ts"
       }

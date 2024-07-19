@@ -13,7 +13,7 @@ import {
   takeUntil,
 } from "rxjs";
 import { BackendService } from "./backend-service";
-import { Project, Task } from "./dto";
+import { Project, Task, TaskWithProject } from "./dto";
 import { TaskCreaterComponent } from "./task-creater.component";
 import { TaskListComponent } from "./task-list.component";
 
@@ -90,7 +90,7 @@ export class WelcomeComponent implements OnDestroy {
     shareReplay(1),
   );
   private tasksRefresh$ = new Subject<void>();
-  tasks$: Observable<Task[]> = this.tasksRefresh$.pipe(
+  tasks$: Observable<TaskWithProject[]> = this.tasksRefresh$.pipe(
     switchMap(() => this.backendService.getTasks()),
     startWith([]),
     shareReplay(1),
@@ -116,7 +116,7 @@ export class WelcomeComponent implements OnDestroy {
           $event.isPrivate,
         )
         .pipe(takeUntil(this.destroy$))
-        .subscribe();
+        .subscribe(() => this.tasksRefresh$.next());
     } else {
       console.log($event);
       console.log($event.project);
@@ -136,7 +136,7 @@ export class WelcomeComponent implements OnDestroy {
               $event.isPrivate,
             )
             .pipe(takeUntil(this.destroy$))
-            .subscribe();
+            .subscribe(() => this.tasksRefresh$.next());
         });
     }
   }

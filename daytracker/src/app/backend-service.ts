@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, Observable } from "rxjs";
 import { environment } from "../environments/environment";
-import { Project, Task } from "./dto";
+import { Project, Task, TaskWithProject } from "./dto";
 
 @Injectable({
   providedIn: "root",
@@ -15,8 +15,10 @@ export class BackendService {
     return this.client.get<Project[]>(environment.apiUrl + "/api/projects");
   }
 
-  getTasks(): Observable<Task[]> {
-    return this.client.get<Task[]>(environment.apiUrl + "/api/tasks");
+  getTasks(): Observable<TaskWithProject[]> {
+    return this.client.get<TaskWithProject[]>(
+      environment.apiUrl + "/api/tasks",
+    );
   }
 
   updateTasks(tasks: Task[]): Observable<Task[]> {

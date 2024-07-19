@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 import { DrizzleService } from "../drizzle.service";
-import { projects, tasks } from "../schema";
+import { project, task } from "../schema";
 import { TaskDTO } from "./dto/task.dto";
 
 @Controller()
@@ -19,17 +19,20 @@ export class AppController {
 
   @Get()
   getTTTASD() {
-    return this.drizzleService.db.select().from(projects);
+    return this.drizzleService.db.select().from(project);
   }
 
   @Get("projects")
   getProjects() {
-    return this.drizzleService.db.select().from(projects);
+    return this.drizzleService.db.select().from(project);
   }
 
   @Get("tasks")
   getTasks() {
-    return this.drizzleService.db.select().from(tasks);
+    return this.drizzleService.db
+      .select()
+      .from(task)
+      .innerJoin(project, eq(task.project, project.id));
   }
 
   @Put("task")
@@ -40,25 +43,25 @@ export class AppController {
       skipMissingProperties: true,
     }),
   )
-  updateTasks(@Body() task: TaskDTO) {
-    console.log(task);
+  updateTasks(@Body() updatedTask: TaskDTO) {
+    console.log(updatedTask);
     return this.drizzleService.db
-      .update(tasks)
+      .update(task)
       .set({
-        name: task.name,
-        priority: task.priority,
-        project: task.project,
-        done: task.done,
-        due: task.due,
-        private: task.isPrivate,
+        name: updatedTask.name,
+        priority: updatedTask.priority,
+        project: updatedTask.project,
+        done: updatedTask.done,
+        due: updatedTask.due,
+        private: updatedTask.private,
       })
-      .where(eq(tasks.id, task.id))
-      .returning({ id: tasks.id });
+      .where(eq(task.id, updatedTask.id))
+      .returning({ id: task.id });
   }
 
   @Get("tasks/:id")
   getTask(@Param("id") id: number) {
-    return this.drizzleService.db.select().from(tasks).where(eq(tasks.id, id));
+    return this.drizzleService.db.select().from(task).where(eq(task.id, id));
   }
 
   @Post("projects")
@@ -67,12 +70,12 @@ export class AppController {
       transform: true,
     }),
   )
-  Project(@Body("name") names: string) {
-    console.log(names);
+  Project(@Body("name") name: string) {
+    console.log(name);
     return this.drizzleService.db
-      .insert(projects)
-      .values({ name: names })
-      .returning({ id: projects.id });
+      .insert(project)
+      .values({ name: name })
+      .returning({ id: project.id });
   }
 
   @Post("tasks")
@@ -83,15 +86,15 @@ export class AppController {
       skipMissingProperties: true,
     }),
   )
-  createTask(@Body() task: TaskDTO) {
+  createTask(@Body() newTask: TaskDTO) {
     return this.drizzleService.db
-      .insert(tasks)
+      .insert(task)
       .values({
-        name: task.name,
-        project: task.project,
-        priority: task.priority,
-        due: task.due,
-        private: task.isPrivate,
+        name: newTask.name,
+        project: newTask.project,
+        priority: newTask.priority,
+        due: newTask.due,
+        private: newTask.private,
       })
       .returning();
   }
