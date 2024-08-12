@@ -71,14 +71,11 @@ import { TaskListComponent } from "./task-list.component";
   ],
 })
 export class WelcomeComponent implements OnDestroy {
-  //TODO CHECKBOX BEHAVIOUR NOT CORRECT; WRONG DATA SOMEHOW
-  //TODO: Due Date Time Discrepency
-  //TODO: Task List
-  //TODO: Task Complete
+  //TODO: Finished Task List Daily and Weekly
   //TODO: Tasks groupably by Project
   //TODO: Tasks sortable by priority and due
   //TODO: Tasks highlighted when due is near
-  //TODO: Finished Task List Daily and Weekly
+  //TODO: Load only tasks with active = false for task list
   private destroy$ = new Subject<void>();
 
   backendService = inject(BackendService);
