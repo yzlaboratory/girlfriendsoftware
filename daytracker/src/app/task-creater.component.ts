@@ -78,6 +78,8 @@ import { newTask, Project } from "./dto";
           [iconDisplay]="'input'"
           [showIcon]="true"
           dateFormat="dd.mm.yy"
+          [showTime]="true"
+          [hourFormat]="'24'"
           [style]="{ width: '100%' }"
           [inputStyle]="{ width: '100%' }" />
       </div>
