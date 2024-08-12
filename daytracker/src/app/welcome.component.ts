@@ -13,7 +13,7 @@ import {
   takeUntil,
 } from "rxjs";
 import { BackendService } from "./backend-service";
-import { Project, Task, TaskWithProject } from "./dto";
+import { newTask, Project, Task, TaskWithProject } from './dto';
 import { TaskCreaterComponent } from "./task-creater.component";
 import { TaskListComponent } from "./task-list.component";
 
@@ -102,38 +102,29 @@ export class WelcomeComponent implements OnDestroy {
     this.tasksRefresh$.next();
   }
 
-  handleNewTask($event: any) {
-    let projectId = null;
-    if (!isNaN(+Number($event.project))) {
-      console.log($event);
-      projectId = $event.project;
+  handleNewTask(task: newTask) {
+    console.log(task);
+    if (!isNaN(+Number(task.project))) {
+      console.log(task);
       this.backendService
         .createTask(
-          $event.name,
-          projectId,
-          $event.priority,
-          $event.due,
-          $event.isPrivate,
+          task
         )
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => this.tasksRefresh$.next());
     } else {
-      console.log($event);
-      console.log($event.project);
+      console.log(task);
+      console.log(task.project);
       this.backendService
-        .createProject($event.project)
+        .createProject(task.project)
         .pipe(take(1), takeUntil(this.destroy$))
         .subscribe((responseBody) => {
           console.log(responseBody[0].id);
-          projectId = responseBody[0].id;
+          task.project = responseBody[0].id.toString();
           this.projectsRefresh$.next();
           this.backendService
             .createTask(
-              $event.name,
-              projectId,
-              $event.priority,
-              $event.due,
-              $event.isPrivate,
+              task
             )
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => this.tasksRefresh$.next());

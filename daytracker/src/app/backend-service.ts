@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { combineLatest, Observable } from "rxjs";
 import { environment } from "../environments/environment";
-import { Project, Task, TaskWithProject } from "./dto";
+import { newTask, Project, Task, TaskWithProject } from "./dto";
 
 @Injectable({
   providedIn: "root",
@@ -31,7 +31,7 @@ export class BackendService {
     return combineLatest(observables$);
   }
 
-  createProject(name: string): Observable<{ id: number }[]> {
+  createProject(name: string | undefined | null): Observable<{ id: number }[]> {
     console.log(name);
     return this.client.post<{ id: number }[]>(
       environment.apiUrl + "/api/projects",
@@ -40,19 +40,14 @@ export class BackendService {
   }
 
   createTask(
-    name: string,
-    project: number,
-    priority: number,
-    due: Date,
-    isPrivate: boolean,
+    task : newTask
   ): Observable<Task[]> {
-    console.log(isPrivate);
     return this.client.post<Task[]>(environment.apiUrl + "/api/tasks", {
-      name: name,
-      priority: priority,
-      isPrivate: isPrivate,
-      project: project,
-      due: due,
+      name: task.name,
+      priority: task.priority,
+      private: task.private,
+      project: task.project,
+      due: task.due,
     });
   }
 }
