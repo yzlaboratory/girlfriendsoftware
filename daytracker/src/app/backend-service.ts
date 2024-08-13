@@ -15,9 +15,10 @@ export class BackendService {
     return this.client.get<Project[]>(environment.apiUrl + "/api/projects");
   }
 
-  getTasks(): Observable<TaskWithProject[]> {
+  getTasks(finished: boolean): Observable<TaskWithProject[]> {
     return this.client.get<TaskWithProject[]>(
       environment.apiUrl + "/api/tasks",
+      { params : { done : finished.toString() }},
     );
   }
 
@@ -25,7 +26,7 @@ export class BackendService {
     const observables$: Observable<Task>[] = [];
     for (const task of tasks) {
       observables$.push(
-        this.client.put<Task>(environment.apiUrl + "/api/task", task),
+        this.client.put<Task>(environment.apiUrl + "/api/tasks", task),
       );
     }
     return combineLatest(observables$);
@@ -35,7 +36,7 @@ export class BackendService {
     console.log(name);
     return this.client.post<{ id: number }[]>(
       environment.apiUrl + "/api/projects",
-      { name: name },
+      { name : name },
     );
   }
 

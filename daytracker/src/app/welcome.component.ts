@@ -14,6 +14,7 @@ import {
 } from "rxjs";
 import { BackendService } from "./backend-service";
 import { newTask, Project, Task, TaskWithProject } from './dto';
+import { FinishedTasksComponent } from "./finished-tasks.component";
 import { TaskCreaterComponent } from "./task-creater.component";
 import { TaskListComponent } from "./task-list.component";
 
@@ -58,8 +59,9 @@ import { TaskListComponent } from "./task-list.component";
       <section>
         <app-task-list
           (tasksClosed)="saveClosedTasksAndReload($event)"
-          [tasks]="tasks()" />
+          [tasks]="openTasks()" />
       </section>
+      <section><app-task-list-finished [tasks]="finishedTasks()"/></section>
     </main>
   `,
   imports: [
@@ -68,7 +70,8 @@ import { TaskListComponent } from "./task-list.component";
     ButtonModule,
     TaskCreaterComponent,
     TaskListComponent,
-  ],
+    FinishedTasksComponent
+],
 })
 export class WelcomeComponent implements OnDestroy {
   //TODO: Finished Task List Daily and Weekly
@@ -87,13 +90,19 @@ export class WelcomeComponent implements OnDestroy {
     shareReplay(1),
   );
   private tasksRefresh$ = new Subject<void>();
-  tasks$: Observable<TaskWithProject[]> = this.tasksRefresh$.pipe(
-    switchMap(() => this.backendService.getTasks()),
+  openTasks$: Observable<TaskWithProject[]> = this.tasksRefresh$.pipe(
+    switchMap(() => this.backendService.getTasks(false)),
+    startWith([]),
+    shareReplay(1),
+  );
+  finishedTasks$: Observable<TaskWithProject[]> = this.tasksRefresh$.pipe(
+    switchMap(() => this.backendService.getTasks(true)),
     startWith([]),
     shareReplay(1),
   );
   projects = toSignal(this.projects$, { initialValue: [] });
-  tasks = toSignal(this.tasks$, { initialValue: [] });
+  openTasks = toSignal(this.openTasks$, { initialValue: [] });
+  finishedTasks = toSignal(this.finishedTasks$, { initialValue: [] });
   constructor() {
     this.projectsRefresh$.next();
     this.tasksRefresh$.next();
