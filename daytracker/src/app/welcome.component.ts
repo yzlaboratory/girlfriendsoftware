@@ -23,12 +23,11 @@ import { TaskListComponent } from "./task-list.component";
   selector: "app-welcome",
   standalone: true,
   host: {
-    class:
-      "flex min-h-screen flex-col text-slate-700 bg-zinc-100 px-4 pt-8 pb-32",
+    class: "flex min-h-screen flex-col text-color bg-app",
   },
   template: `
-    <main class="mx-auto w-2/3 flex-1">
-      <section class="space-y-12 py-6 md:pb-12 md:pt-10 lg:py-32">
+    <main class="mx-auto grid w-full flex-1 grid-cols-6 space-y-2">
+      <section class="">
         <div class="card justify-content-center flex">
           <p-panel
             class="w-full"
@@ -52,19 +51,22 @@ import { TaskListComponent } from "./task-list.component";
           </p-panel>
         </div>
       </section>
-      <section class="py-8 md:py-12 lg:py-24">
+      <section class="col-span-4">
+        <section>
+          <app-task-list
+            (tasksClosed)="saveClosedTasksAndReload($event)"
+            [tasks]="openTasks()" />
+        </section>
+        <section><app-task-list-finished [tasks]="finishedTasks()" /></section>
+        <section>
+          <app-setting-switch (settingChanged)="changePrivatState($event)" />
+        </section>
+      </section>
+
+      <section class="">
         <app-task-creater
           (newTask)="handleNewTask($event)"
           [projects]="projects()" />
-      </section>
-      <section>
-        <app-task-list
-          (tasksClosed)="saveClosedTasksAndReload($event)"
-          [tasks]="openTasks()" />
-      </section>
-      <section><app-task-list-finished [tasks]="finishedTasks()" /></section>
-      <section>
-        <app-setting-switch (settingChanged)="changePrivatState($event)" />
       </section>
     </main>
   `,

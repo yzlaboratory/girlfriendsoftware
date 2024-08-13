@@ -7,10 +7,41 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary: #10b981;
+  --color-setting-1: #f4f4f5;
+  --color-setting-2: #cbd5e1;
+  --color-setting-3: #334155;
+  --color-text: var(--color-setting-3);
+  --color-background: var(--color-setting-1);
+  --color-border: var(--color-setting-2);
+}
+
 html,
 body {
   display: block;
   height: 100%;
   font-size: 14px;
-  color: #334155;
+  color: var(--color-background);
+  margin: 0;
+}
+
+.bg-app {
+  background: var(--color-background);
+}
+
+.border-app {
+  border-color: var(--color-border);
+}
+
+.text-color {
+  color: var(--color-text);
+}
+
+.txt-primary {
+  color: var(--color-primary);
+}
+
+.bg-primary {
+  background: var(--color-background);
 }
