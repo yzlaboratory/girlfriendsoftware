@@ -1,5 +1,5 @@
 import { AsyncPipe } from "@angular/common";
-import { Component, inject, OnDestroy } from "@angular/core";
+import { Component, inject, OnDestroy, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { ButtonModule } from "primeng/button";
 import { PanelModule } from "primeng/panel";
@@ -13,8 +13,9 @@ import {
   takeUntil,
 } from "rxjs";
 import { BackendService } from "./backend-service";
-import { newTask, Project, Task, TaskWithProject } from './dto';
+import { newTask, Project, Task, TaskWithProject } from "./dto";
 import { FinishedTasksComponent } from "./finished-tasks.component";
+import { SettingSwitchComponent } from "./setting-switch/setting-switch.component";
 import { TaskCreaterComponent } from "./task-creater.component";
 import { TaskListComponent } from "./task-list.component";
 
@@ -61,7 +62,10 @@ import { TaskListComponent } from "./task-list.component";
           (tasksClosed)="saveClosedTasksAndReload($event)"
           [tasks]="openTasks()" />
       </section>
-      <section><app-task-list-finished [tasks]="finishedTasks()"/></section>
+      <section><app-task-list-finished [tasks]="finishedTasks()" /></section>
+      <section>
+        <app-setting-switch (settingChanged)="changePrivatState($event)" />
+      </section>
     </main>
   `,
   imports: [
@@ -70,8 +74,9 @@ import { TaskListComponent } from "./task-list.component";
     ButtonModule,
     TaskCreaterComponent,
     TaskListComponent,
-    FinishedTasksComponent
-],
+    FinishedTasksComponent,
+    SettingSwitchComponent,
+  ],
 })
 export class WelcomeComponent implements OnDestroy {
   //TODO: Finished Task List Daily and Weekly
@@ -79,7 +84,10 @@ export class WelcomeComponent implements OnDestroy {
   //TODO: Tasks sortable by priority and due
   //TODO: Tasks highlighted when due is near
   //TODO: Load only tasks with active = false for task list
+  //TODO: consider adding icons to form field
   private destroy$ = new Subject<void>();
+
+  private private = signal(false);
 
   backendService = inject(BackendService);
 
@@ -113,9 +121,7 @@ export class WelcomeComponent implements OnDestroy {
     if (!isNaN(+Number(task.project))) {
       console.log(task);
       this.backendService
-        .createTask(
-          task
-        )
+        .createTask(task)
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => this.tasksRefresh$.next());
     } else {
@@ -129,13 +135,15 @@ export class WelcomeComponent implements OnDestroy {
           task.project = responseBody[0].id.toString();
           this.projectsRefresh$.next();
           this.backendService
-            .createTask(
-              task
-            )
+            .createTask(task)
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => this.tasksRefresh$.next());
         });
     }
+  }
+
+  changePrivatState(isPrivate: boolean) {
+    this.private.set(isPrivate);
   }
 
   saveClosedTasksAndReload(tasks: Task[]) {
