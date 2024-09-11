@@ -1,0 +1,10 @@
+{
+  "name": "itinerary-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/itinerary-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["itinerary"],
+  "// targets": "to see all targets run: nx show project itinerary-e2e --web",
+  "targets": {}
+}
