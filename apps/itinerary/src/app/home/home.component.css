@@ -1,0 +1,14 @@
+.carousel {
+  display: flex;
+  flex-flow: row nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  position: absolute;
+}
+
+.carousel-cell {
+  scroll-snap-align: start;
+  position: relative;
+}
