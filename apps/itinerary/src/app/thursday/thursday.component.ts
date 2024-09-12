@@ -10,3 +10,6 @@ import { CardComponent } from "../card/card.component";
   styleUrl: "./thursday.component.css",
 })
 export class ThursdayComponent {}
+//mehr abstand
+// rechts linie
+// p alignment vertical center of circle
