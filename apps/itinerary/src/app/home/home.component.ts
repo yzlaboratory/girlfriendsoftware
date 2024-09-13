@@ -3,6 +3,7 @@ import { Component } from "@angular/core";
 import { CardComponent } from "../card/card.component";
 import { FridayComponent } from "../friday/friday.component";
 import { SaturdayComponent } from "../saturday/saturday.component";
+import { StartComponent } from "../start/start.component";
 import { ThursdayComponent } from "../thursday/thursday.component";
 
 @Component({
@@ -14,6 +15,7 @@ import { ThursdayComponent } from "../thursday/thursday.component";
     ThursdayComponent,
     FridayComponent,
     SaturdayComponent,
+    StartComponent,
   ],
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.css",
