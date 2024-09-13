@@ -20,4 +20,8 @@ import { ThursdayComponent } from "../thursday/thursday.component";
   templateUrl: "./home.component.html",
   styleUrl: "./home.component.css",
 })
-export class HomeComponent {}
+export class HomeComponent {
+  //set height properly in parent containers
+  //then set min-width 100% on img
+  //maybe crop image a little to avoid stretching
+}
